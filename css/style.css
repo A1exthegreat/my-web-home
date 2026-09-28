@@ -78,7 +78,7 @@ img { max-width: 100%; display: block; }
     box-shadow: 0 0 10px var(--cyan);
 }
 
-.menu { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 6px 0; list-style: none; }
+.menu { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 6px 0; list-style: none; }
 .menu li { display: flex; }
 .menu a {
     display: block;
@@ -257,8 +257,8 @@ pre {
 pre .hl { color: var(--gold); font-weight: 700; }
 pre .cm { color: #6f9bbd; }
 code.inline {
-    background: #eaf3f8; border: 1px solid #cfe4ef; border-radius: 6px;
-    padding: 2px 7px; font-family: var(--mono); font-size: .87em; color: #0d5f78;
+    background: #e6eff6; border: 1px solid #c2d9e8; border-radius: 6px;
+    padding: 2px 7px; font-family: var(--mono); font-size: .87em; color: #0a4a63;
 }
 
 blockquote {

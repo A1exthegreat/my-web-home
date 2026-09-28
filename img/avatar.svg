@@ -15,11 +15,11 @@
   <circle cx="210" cy="210" r="188" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="3"/>
 
   <!-- 背景代码符号 -->
-  <g fill="#ffffff" opacity=".16" font-family="Consolas,monospace" font-size="26">
-    <text x="46" y="96">&lt;/&gt;</text>
-    <text x="316" y="82">{ }</text>
-    <text x="60" y="330">01</text>
-    <text x="318" y="326">HTTP</text>
+  <g fill="#ffffff" opacity=".18" font-family="Consolas,monospace" font-size="24">
+    <text x="52" y="104">&lt;/&gt;</text>
+    <text x="300" y="92">{ }</text>
+    <text x="74" y="316">01</text>
+    <text x="312" y="312">h2</text>
   </g>
 
   <!-- 人物 -->
