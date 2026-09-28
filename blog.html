@@ -4,148 +4,121 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="崔嘉洋">
-<meta name="description" content="博客：把一个静态站点挂上 GitHub Pages —— 从手写 HTML 到确认 HTTP/2 的完整过程">
-<title>博客 · 把一个静态站点挂上 GitHub Pages</title>
-<link rel="icon" href="img/avatar.svg">
+<meta name="description" content="实验一网页制作与发布记录：文件结构、Git 命令、GitHub Pages 部署、HTTP 版本检查结果">
+<title>博客：实验一网页制作与发布记录 - 我的主页</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dot"></span>崔嘉洋 · My Web Home</a>
-    <ul class="menu">
-      <li><a href="index.html">首页</a></li>
-      <li><a href="ustc.html">科大印象</a></li>
-      <li><a href="research.html">研究分享</a></li>
-      <li><a class="active" href="blog.html">博客</a></li>
-      <li><a href="http.html">HTTP 观察</a></li>
-    </ul>
-  </div>
-</nav>
-
-<header class="hero">
-  <div class="hero-inner">
-    <h1>把一个静态站点挂上 GitHub Pages<span class="en">FROM index.html TO HTTP/2 200 OK</span></h1>
-    <p class="slogan">这是我第一次真正"发布"一个网页：不装 Node，不装 Hexo，只用 HTML、CSS 和 git，把四个页面变成公网可访问的网址。</p>
-  </div>
+<header class="site">
+  <h1>实验一：静态网页制作与发布记录</h1>
+  <p class="time">发布时间 2026-09-28 · 作者 崔嘉洋 · 本页就是本次实验新发布的那篇博客</p>
 </header>
 
-<main class="wrap">
-<article class="post">
-  <p class="post-meta">
-    发布于 <time datetime="2026-09-28">2026-09-28</time> · 作者 崔嘉洋 ·
-    标签 <a href="#s1">#静态站点</a> <a href="#s3">#git</a> <a href="#s5">#HTTP</a> ·
-    阅读约 6 分钟
-  </p>
-
-  <p>计算机网络实验第一题要求"做一个网页并发布"。我原本打算直接套一个 Hexo 模板，十分钟后放弃了：如果我自己都说不清这个页面是<strong>怎么</strong>被浏览器解析出来的，那这个实验就白做了。于是我决定手写，只用最原始的两件东西 —— HTML 和 CSS。</p>
-
-  <blockquote>这篇文章既是实验记录，也是给三个月后的自己看的：当时踩的三个坑，别再踩第四次。</blockquote>
-
-  <h3 id="s1">1. 为什么坚持手写</h3>
-  <p>框架会把三件事变得看不见：<code class="inline">link</code> 与 <code class="inline">script</code> 的加载顺序、静态资源的真实 URL、以及浏览器究竟发起了多少次请求。而这三件事恰好是计网这门课要考的。手写一个页面，我至少要回答：CSS 放在 <code class="inline">&lt;head&gt;</code> 里和放在末尾有什么区别？为什么图片要用相对路径？——这些问题在脚手架里永远不会暴露。</p>
-
-  <h3 id="s2">2. 文件结构</h3>
-  <p>整个站点不到 6 个文件，一个 CSS 复用四页：</p>
-  <pre><span class="cm"># 站点目录（GitHub Pages 直接发布仓库根目录）</span>
-my-web-home/
-├── index.html        <span class="cm"># 首页 / 自我简介</span>
-├── ustc.html         <span class="cm"># 科大印象</span>
-├── research.html     <span class="cm"># 研究分享</span>
-├── blog.html         <span class="cm"># 博客（本文）</span>
-├── http.html         <span class="cm"># HTTP 版本观测记录</span>
-├── css/style.css     <span class="cm"># 全站唯一样式表</span>
-└── img/              <span class="cm"># 自制 SVG 插画 + PIL 生成的雷达图</span></pre>
-
-  <p>页面之间靠相对路径互链，这样将来无论从站点根目录还是子目录部署都不用改链接：</p>
-  <pre>&lt;<span class="hl">a</span> href=<span class="hl">"research.html"</span>&gt;研究分享&lt;/<span class="hl">a</span>&gt;      <span class="cm"># ✔ 相对路径</span>
-&lt;<span class="hl">img</span> src=<span class="hl">"img/campus.svg"</span> alt=<span class="hl">"校园插画"</span>&gt;  <span class="cm"># ✔ alt 一定要写，无障碍 + 加载失败可兜底</span></pre>
-
-  <p>顺手记一下真正让我改观的两个细节：</p>
+<nav class="top">
   <ul>
-    <li><strong>CSS 变量</strong>：<code class="inline">:root</code> 里定义 <code class="inline">--navy</code>、<code class="inline">--cyan</code>，改主题只需动 4 行；</li>
-    <li><strong>Grid 三列 → 一列</strong>：一段 <code class="inline">@media (max-width:860px)</code> 就让手机上不再横向溢出，比想象简单得多。</li>
+    <li><a href="index.html">学校介绍</a></li>
+    <li><a href="campus.html">校园风光</a></li>
+    <li><a class="now" href="blog.html">博客：实验一记录</a></li>
   </ul>
+</nav>
 
-  <h3 id="s3">3. 用 git 把代码推上去</h3>
-  <figure style="margin:26px 0">
-    <img src="img/deploy-steps.svg" alt="部署五步流程图：手写页面、git commit、git push、开启 Pages、访问验证" width="920" height="300">
-    <figcaption>五步流程与每一步的检查点（我实际按这个顺序做的）</figcaption>
-  </figure>
+<article>
 
-  <pre><span class="cm"># 初始化仓库</span>
-git init
+<p>这篇记录本次实验做了什么、中间卡在哪里、最后怎么确认结果。实验要求写在<a href="https://myworldandyou.github.io/2026-09-22/Computer-Network-Lab-1/" target="_blank" rel="noopener">指导书</a>里：做一个主题明确的网页、发布一篇新博客、检查网页使用的 HTTP 协议版本，页面里要有图片和至少三个超链接。</p>
+
+<h2 id="s1">1. 页面文件</h2>
+<p>我做了三个页面，共用一份样式表。图片用的是校园照片的原始网址，所以仓库里没有图片文件。</p>
+<pre><code>my-web-home/
+├── index.html      学校介绍（首页）
+├── campus.html     校园风光
+├── blog.html       本页，实验记录
+└── css/
+    └── style.css   三个页面共用的样式表</code></pre>
+
+<p>页面里用到的标签如下表。</p>
+<table>
+  <caption>表 1 页面里用到的 HTML 标签</caption>
+  <thead>
+    <tr><th style="width:34%">标签</th><th>用在哪里</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>&lt;h1&gt; &lt;h2&gt; &lt;h3&gt;</td><td>页面标题和五个小节的标题</td></tr>
+    <tr><td>&lt;p&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt;</td><td>正文段落、相关链接、培养方式列表</td></tr>
+    <tr><td>&lt;a href&gt;</td><td>三个页面互链，另有 5 个指向校外网站的链接</td></tr>
+    <tr><td>&lt;img src alt&gt;</td><td>校门照片与教学楼照片，alt 写了图片内容</td></tr>
+    <tr><td>&lt;table&gt; &lt;caption&gt; &lt;th&gt; &lt;td&gt;</td><td>学校基本情况、历史节点、院系方向、地点列表</td></tr>
+    <tr><td>&lt;div&gt;</td><td>提示块 <code>&lt;div class="note"&gt;</code>，样式表里给它加了左侧竖线</td></tr>
+    <tr><td>&lt;figure&gt; &lt;figcaption&gt;</td><td>照片与图下说明</td></tr>
+    <tr><td>&lt;header&gt; &lt;nav&gt; &lt;footer&gt;</td><td>页头、导航条、页脚</td></tr>
+    <tr><td>&lt;pre&gt; &lt;code&gt;</td><td>本页贴命令和目录结构</td></tr>
+  </tbody>
+</table>
+
+<p>CSS 只有 300 行左右，全放在一个文件里。内容不多，主要是 <code>body</code> 限制宽度居中、<code>h2</code> 加左侧竖线、表格加边框和隔行底色、最后一段 <code>@media (max-width: 600px)</code> 处理手机宽度。</p>
+
+<h2 id="s2">2. 用 Git 提交并部署到 GitHub Pages</h2>
+<pre><code>git init -b main
 git add .
-git commit -m "feat: 静态站点第一版（四页 + 共享样式）"
+git commit -m "add lab 1 webpage"
+git remote add origin https://github.com/A1exthegreat/my-web-home.git
+git push -u origin main</code></pre>
+<p>推上去之后网页并不会自动有网站，还要在仓库的 Settings &rarr; Pages 里指定用哪个分支发布。我是用命令行做的：</p>
+<pre><code>gh api -X POST repos/A1exthegreat/my-web-home/pages \
+    -f "source[branch]=main" -f "source[path]=/"</code></pre>
+<p>之后每次改完页面，重复三步就能更新：</p>
+<pre><code>git add -A
+git commit -m "改了什么写清楚"
+git push origin main</code></pre>
 
-<span class="cm"># 关联远端并推送（我直接用 gh 建了个公开仓库）</span>
-gh repo create my-web-home --public --source=. --push   <span class="cm"># 等价于 remote add + push</span>
+<h2 id="s3">3. 检查 HTTP 协议版本</h2>
+<p>按指导书的做法，打开已经发布的页面，按 F12 打开开发者工具，切到 Network（网络）面板，刷新页面，在表头上勾选 Protocol（协议）这一列。主文档那一行显示的是 <code>h2</code>，也就是 HTTP/2。页面里的照片和样式表同样是 <code>h2</code>。</p>
+<p>我在命令行里又查了一遍，结论一致：</p>
+<pre><code>$ curl -sS -o /dev/null -w "%{http_version}\n" \
+    https://a1exthegreat.github.io/my-web-home/
+2
 
-<span class="cm"># 之后每次改完页面，只需三行</span>
-git add -A && git commit -m "docs: 新增 HTTP 观测页" && git push origin main</pre>
+$ curl -v -I https://a1exthegreat.github.io/my-web-home/ 2&gt;&amp;1 | grep -E "ALPN|HTTP/"
+* ALPN: curl offers h2,http/1.1
+* ALPN: server accepted h2
+* using HTTP/2
+&lt; HTTP/2 200
 
-  <h3 id="s4">4. 开启 Pages：我踩的三个坑</h3>
-  <p>仓库推上去之后并不会自动有网站，要显式告诉 GitHub "把哪个分支的哪个目录当作站点根"：</p>
-  <pre><span class="cm"># 用 API 打开 Pages（也可以在 Settings → Pages 里点两下）</span>
-gh api -X POST repos/A1exthegreat/my-web-home/pages -f <span class="hl">source[branch]=main</span> -f <span class="hl">source[path]=/</span>
+$ curl -sS --http1.1 -o /dev/null -w "%{http_version} %{http_code}\n" \
+    https://a1exthegreat.github.io/my-web-home/
+1.1 200</code></pre>
+<p>三条结果说明：协商结果是 HTTP/2；服务端也支持 HTTP/1.1，客户端不报 <code>h2</code> 时会退回 1.1；页面本身没有宣告 HTTP/3。</p>
 
-<span class="cm"># 看构建状态</span>
-gh api repos/A1exthegreat/my-web-home/pages --jq .status   <span class="cm"># building → built</span></pre>
+<h2 id="s4">4. 卡住的几个地方</h2>
+<ol>
+  <li><strong>发布后打开是 404。</strong>原因是 Pages 的发布目录设成了 <code>/docs</code>，而我把页面推在仓库根目录。把 <code>source[path]</code> 改成 <code>/</code> 就正常了。</li>
+  <li><strong>线上只剩文字，样式丢了。</strong>本地用 <code>file://</code> 打开时一切正常，上线后样式表加载不到。原因是我一开始写的是 <code>/css/style.css</code>，站点挂在 <code>/my-web-home/</code> 这个子目录下，这个绝对路径指到了站点外面。改成相对路径解决。</li>
+  <li><strong>改了页面看不到变化。</strong>响应头里有 <code>cache-control: max-age=600</code>，浏览器和中间缓存都还在用旧文件。判断是否发布成功的时候不要只看浏览器，用 curl 看一遍更靠得住。</li>
+  <li><strong>把代理的响应当成了网页的协议版本。</strong>我的机器上开了本地代理，curl 输出第一行是 <code>HTTP/1.1 200 Connection established</code>，这是代理为建立隧道回的响应，不是网页的版本号。真正的状态行在它下面一行。</li>
+</ol>
 
-  <table>
-    <caption>三个坑与排查方式</caption>
-    <thead><tr><th>现象</th><th>我以为</th><th>实际上</th></tr></thead>
-    <tbody>
-      <tr><td>访问 <code class="inline">/my-web-home/</code> 返回 404</td><td>构建失败</td><td>Pages 源目录写成了 <code class="inline">/docs</code>，而我推的是根目录</td></tr>
-      <tr><td>样式全丢，只剩纯文本</td><td>CSS 写错了</td><td>本地 <code class="inline">file://</code> 打开正常，但绝对路径 <code class="inline">/css/style.css</code> 在子路径部署下指向了站点外</td></tr>
-      <tr><td>改了内容看不到</td><td>没部署成功</td><td>响应头 <code class="inline">cache-control: max-age=600</code>，浏览器还在吃缓存 —— <code class="inline">Ctrl+F5</code> 或换 curl 验证</td></tr>
-    </tbody>
-  </table>
+<h2 id="s5">5. 对照检查项</h2>
+<table>
+  <caption>表 2 提交前自查（对照指导书的检查表）</caption>
+  <thead>
+    <tr><th style="width:46%">检查项</th><th>情况</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>网页主题明确、内容完整</td><td>主题为学校介绍，共三个页面</td></tr>
+    <tr><td>发布了一篇新的博客文章</td><td>就是本页</td></tr>
+    <tr><td>页面至少三个有效超链接</td><td>站内链接 12 个，指向校外网站的链接 5 个，都点过</td></tr>
+    <tr><td>包含图片且能正常加载</td><td>两张照片，用浏览器和 curl 各查过一次</td></tr>
+    <tr><td>电脑和手机宽度下都能读</td><td>手机宽度（390 像素）下看过，没有横向滚动</td></tr>
+    <tr><td>记录公网网页的协议版本</td><td>HTTP/2（h2）</td></tr>
+  </tbody>
+</table>
 
-  <div class="note"><b>经验：</b>判断"发布是否成功"永远用 <code class="inline">curl</code>，不要用浏览器。浏览器会替你缓存、会替你补全协议、还会替你记住上一次的错误页面。</div>
+<p>下一步想给站点补 RSS，再把 <code>ETag</code> 和 <code>304</code> 这一来一回抓下来看清楚。</p>
 
-  <h3 id="s5">5. 最后一个问题：这是 HTTP 几？</h3>
-  <p>站点能访问之后，实验还有一问：这个网页用的 HTTP 是哪个版本？一行命令就能看到协商结果：</p>
-  <pre>curl -sS -I -o /dev/null -w <span class="hl">"%{http_version}  %{url_effective}\n"</span> https://a1exthegreat.github.io/my-web-home/
-<span class="cm"># 输出：2  https://a1exthegreat.github.io/my-web-home/</span></pre>
-  <p><strong>HTTP/2</strong>。完整的过程报文（TLS ALPN 协商、响应头、强制降级到 1.1 的对照实验）我都放在
-     <a href="http.html">HTTP 观察</a> 这一页，那里还对比了 h1.1 / h2 / h3 的差异。</p>
-
-  <h3 id="s6">6. 小结与下一步</h3>
-  <p>这次实验最实在的收获不是"会写 HTML"，而是把一条完整链路串起来了：编辑文件 → 版本快照 → 远端仓库 → 静态托管 → CDN 缓存 → 协议协商。以前这门课的每一章各自独立，现在它们在一个具体的 URL 上会合了。</p>
-  <p>接下来想做的三件事：给站点加一个真正的 <code class="inline">sitemap.xml</code> 与 RSS；把 <code class="inline">ETag / If-None-Match</code> 的 304 过程抓下来看一遍；再给页面配上 HTTP 严格传输安全（HSTS）与预加载的实验 —— 前提是先把报告写完交给老师。</p>
-
-  <div class="divider"></div>
-
-  <div class="panel">
-    <p style="margin:0"><strong>本文提到的链接</strong></p>
-    <ul>
-      <li>本站源码：<a href="https://github.com/A1exthegreat/my-web-home" target="_blank" rel="noopener">github.com/A1exthegreat/my-web-home</a></li>
-      <li>Pages 部署文档：<a href="https://docs.github.com/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site" target="_blank" rel="noopener">Configuring a publishing source</a></li>
-      <li>HTTP/2 标准：<a href="https://datatracker.ietf.org/doc/html/rfc9113" target="_blank" rel="noopener">RFC 9113（HTTP/2）</a></li>
-      <li>HTML 语法速查：<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML" target="_blank" rel="noopener">MDN Web HTML</a></li>
-      <li>实验要求的示例站：<a href="https://myworldandyou.github.io/" target="_blank" rel="noopener">myworldandyou.github.io</a></li>
-    </ul>
-    <p class="muted">← 读完可以回到 <a href="index.html">首页</a>，或者直接看 <a href="research.html">研究分享</a>。</p>
-  </div>
 </article>
 
-  <div class="pager">
-    <a href="research.html">← 上一页：研究分享</a>
-    <a href="http.html">下一页：HTTP 观察 →</a>
-  </div>
-</main>
-
-<footer>
-  <div class="foot-links">
-    <span><a href="index.html">首页</a></span>
-    <span><a href="ustc.html">科大印象</a></span>
-    <span><a href="research.html">研究分享</a></span>
-    <span><a href="blog.html">博客</a></span>
-    <span><a href="http.html">HTTP 观察</a></span>
-  </div>
-  <div>© 2026 崔嘉洋 · 纯 HTML5 + CSS3 手写，GitHub Pages 托管</div>
+<footer class="site">
+  <p>崔嘉洋 · PB24111632 · 中国科学技术大学 · 相关页面：<a href="index.html">学校介绍</a>、<a href="campus.html">校园风光</a></p>
 </footer>
 
 </body>
