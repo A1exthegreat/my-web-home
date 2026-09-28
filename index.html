@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="崔嘉洋">
+<meta name="description" content="崔嘉洋的个人主页：自我简介、科大印象、研究分享与技术博客">
+<title>首页 · 崔嘉洋的个人小站</title>
+<link rel="icon" href="img/avatar.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span>崔嘉洋 · My Web Home</a>
+    <ul class="menu">
+      <li><a class="active" href="index.html">首页</a></li>
+      <li><a href="ustc.html">科大印象</a></li>
+      <li><a href="research.html">研究分享</a></li>
+      <li><a href="blog.html">博客</a></li>
+      <li><a href="http.html">HTTP 观察</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ===== 头图 ===== -->
+<header class="hero">
+  <div class="hero-inner">
+    <h1>你好，我是崔嘉洋<span class="en">CUI JIAYANG · USTC · CS</span></h1>
+    <p class="slogan">一个喜欢把东西拆开看看里面怎么跑的学生：网络协议、操作系统内核、还有那些把两者连起来的系统。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="research.html">看看我在做什么</a>
+      <a class="btn" href="blog.html">读最新博文</a>
+      <a class="btn" href="http.html">这个站用的 HTTP 版本</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===== 自我简介 ===== -->
+  <section>
+    <h2 class="sec">关于我 · Self Introduction</h2>
+    <div class="panel strip">
+      <div class="media-row">
+        <div>
+          <p class="lead">中国科学技术大学 · 计算机科学与技术学院 · 本科生。目前是计算机网络课程的"实验常客"，也是 NexOS/xv6 内核实验的"熬夜常客"。</p>
+          <p>我的习惯是：学一个协议就抓一次包，学一个内核机制就写一个能跑的最小实现。课堂上知道的"TCP 三次握手"，只有在自己 <code class="inline">tcpdump</code> 抓出那三个 SYN / SYN·ACK / ACK 报文之后，才真正变成自己的东西。</p>
+          <p>平时喜欢写点小工具自动化生活（浏览器自动化、自动评教、抽奖脚本），也喜欢在 Linux 终端里折腾 —— 这个站点本身就是用纯 HTML + CSS 手写、再用 Git 推到 GitHub Pages 上发布的。</p>
+          <ul class="tags">
+            <li>C / C++</li><li>Python</li><li>xv6 / NexOS</li><li>HTTP / TCP-IP</li>
+            <li>Linux &amp; Shell</li><li>Git &amp; GitHub Pages</li><li>浏览器自动化</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="img/avatar.svg" alt="崔嘉洋的卡通头像：戴学士帽、戴眼镜，手持笔记本" width="300" height="300">
+          <figcaption>头像为手写 SVG 矢量插画（非外部素材）</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 三个入口卡片 ===== -->
+  <section>
+    <h2 class="sec">这个站点有什么</h2>
+    <div class="grid grid-3">
+      <div class="card strip">
+        <div class="icon">🏛️</div>
+        <h3>科大印象</h3>
+        <p class="muted">东区的樱花、第 29 教学楼、逸夫图书馆，以及一组关于母校的小数据。</p>
+        <a class="more" href="ustc.html">校园介绍 →</a>
+      </div>
+      <div class="card strip">
+        <div class="icon">🔬</div>
+        <h3>研究分享</h3>
+        <p class="muted">从以太网帧到大模型推理：我关心的三层问题，以及做过的内核小实验。</p>
+        <a class="more" href="research.html">研究笔记 →</a>
+      </div>
+      <div class="card strip">
+        <div class="icon">✍️</div>
+        <h3>博客</h3>
+        <p class="muted">新发布：《把一个静态站点挂上 GitHub Pages》，记录本次实验的完整过程。</p>
+        <a class="more" href="blog.html">最新一篇 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 能力雷达 ===== -->
+  <section>
+    <h2 class="sec">能力自评 &amp; 课程成绩</h2>
+    <div class="grid grid-2">
+      <figure>
+        <img src="img/skill-radar.png" alt="能力雷达图：计算机网络、操作系统、编程实现、工具链、科研阅读五个维度" width="560" height="560">
+        <figcaption>自评雷达（主观打分，仅供娱乐）· 用 Python PIL 逐点绘制</figcaption>
+      </figure>
+      <div>
+        <table>
+          <caption>部分专业课成绩（满分 100）</caption>
+          <thead>
+            <tr><th>课程</th><th>学期</th><th>成绩</th><th>一句话感受</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>计算机网络</td><td class="num">大三上</td><td class="num">进行中</td><td>实验比理论课更烧脑，也更有趣</td></tr>
+            <tr><td>操作系统</td><td class="num">大三春</td><td class="num">93</td><td>xv6 上实现 COW，页表终于不神秘了</td></tr>
+            <tr><td>编译原理</td><td class="num">大三春</td><td class="num">90</td><td>亲手把一句代码变成汇编，值</td></tr>
+            <tr><td>数据结构与算法</td><td class="num">大二</td><td class="num">95</td><td>基数树、B+ 树都是这里来的</td></tr>
+            <tr><td>离散数学</td><td class="num">大一</td><td class="num">88</td><td>图的染色，梦开始的地方</td></tr>
+          </tbody>
+        </table>
+        <div class="note">
+          <b>顺便说一句：</b>这张表就是 HTML 的 <code class="inline">&lt;table&gt;</code> 加几行 CSS 渲染出来的，没有用任何表格组件库。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 基本信息表 ===== -->
+  <section>
+    <h2 class="sec">名片</h2>
+    <table>
+      <caption>基本信息</caption>
+      <tbody>
+        <tr><th style="width:26%">姓名 / 学号</th><td>崔嘉洋 · PB24111632</td></tr>
+        <tr><th>学校 / 专业</th><td>中国科学技术大学 · 计算机科学与技术</td></tr>
+        <tr><th>邮箱</th><td><a href="mailto:ustc_alex@mail.ustc.edu.cn">ustc_alex@mail.ustc.edu.cn</a></td></tr>
+        <tr><th>代码仓库</th><td><a href="https://github.com/A1exthegreat" target="_blank" rel="noopener">github.com/A1exthegreat</a></td></tr>
+        <tr><th>本站源码</th><td><a href="https://github.com/A1exthegreat/my-web-home" target="_blank" rel="noopener">A1exthegreat/my-web-home</a>（GitHub Pages 自动部署）</td></tr>
+        <tr><th>本站参考</th><td>网页示例 <a href="https://myworldandyou.github.io/" target="_blank" rel="noopener">myworldandyou.github.io</a>；语法速查 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML" target="_blank" rel="noopener">MDN Web HTML</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="pager">
+    <a href="ustc.html">下一页：科大印象 →</a>
+    <a href="http.html">这个站用的是 HTTP 几？→</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="foot-links">
+    <span><a href="index.html">首页</a></span>
+    <span><a href="ustc.html">科大印象</a></span>
+    <span><a href="research.html">研究分享</a></span>
+    <span><a href="blog.html">博客</a></span>
+    <span><a href="http.html">HTTP 观察</a></span>
+  </div>
+  <div>© 2026 崔嘉洋 · 纯 HTML5 + CSS3 手写，GitHub Pages 托管 · 图片均为自制 SVG/PNG</div>
+</footer>
+
+</body>
+</html>

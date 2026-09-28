@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="460" viewBox="0 0 1400 460" fill="none">
+  <!-- 抽象网络拓扑：节点 + 链路，用作 Hero 背景 -->
+  <g stroke="#8fe3ef" stroke-width="1.1" opacity="0.55">
+    <path d="M90 330 L250 150 L430 260 L610 110 L790 230 L960 130 L1130 250 L1310 160"/>
+    <path d="M90 330 L300 380 L520 330 L760 400 L980 330 L1200 390 L1310 160"/>
+    <path d="M250 150 L430 60 L610 110"/>
+    <path d="M430 260 L520 330"/>
+    <path d="M790 230 L760 400"/>
+    <path d="M960 130 L1130 60 L1310 160"/>
+    <path d="M610 110 L790 230"/>
+    <path d="M300 380 L250 150"/>
+    <path d="M980 330 L960 130"/>
+    <path d="M1130 250 L1200 390"/>
+    <path d="M430 60 L760 40"/>
+    <path d="M760 40 L1130 60"/>
+  </g>
+  <g fill="#bff3f8">
+    <circle cx="90"  cy="330" r="5"/><circle cx="250" cy="150" r="7"/><circle cx="430" cy="260" r="5"/>
+    <circle cx="610" cy="110" r="8"/><circle cx="790" cy="230" r="5"/><circle cx="960" cy="130" r="7"/>
+    <circle cx="1130" cy="250" r="5"/><circle cx="1310" cy="160" r="6"/>
+  </g>
+  <g fill="#f4b942">
+    <circle cx="300" cy="380" r="5"/><circle cx="520" cy="330" r="6"/><circle cx="760" cy="400" r="5"/>
+    <circle cx="980" cy="330" r="6"/><circle cx="1200" cy="390" r="5"/>
+    <circle cx="430" cy="60"  r="4"/><circle cx="760" cy="40"  r="5"/><circle cx="1130" cy="60" r="4"/>
+  </g>
+  <g fill="#ffffff" opacity="0.75">
+    <circle cx="180" cy="80" r="2"/><circle cx="640" cy="300" r="2"/><circle cx="1050" cy="200" r="2"/>
+    <circle cx="880" cy="60" r="2"/><circle cx="360" cy="440" r="2"/><circle cx="1290" cy="300" r="2"/>
+  </g>
+</svg>

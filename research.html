@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="崔嘉洋">
+<meta name="description" content="研究分享：系统方向的学习路线、内核实验记录与论文清单">
+<title>研究分享 · 崔嘉洋的个人小站</title>
+<link rel="icon" href="img/avatar.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span>崔嘉洋 · My Web Home</a>
+    <ul class="menu">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="ustc.html">科大印象</a></li>
+      <li><a class="active" href="research.html">研究分享</a></li>
+      <li><a href="blog.html">博客</a></li>
+      <li><a href="http.html">HTTP 观察</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>研究分享<span class="en">SYSTEMS · KERNELS · NETWORKING</span></h1>
+    <p class="slogan">我暂时还没有"研究成果"，只有一份不断被推翻的实验记录。这一页就用来放这份记录。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#lab">实验记录</a>
+      <a class="btn" href="#paper">论文清单</a>
+      <a class="btn" href="http.html">一次真实的 HTTP 观测</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2 class="sec">我在看什么</h2>
+    <figure>
+      <img src="img/pipeline.svg" alt="技术链路图：以太网帧、内核协议栈、应用层协议、Web 服务、AI 推理服务" width="920" height="340">
+      <figcaption>我关心的一条链路：数据从一个网卡队列出发，最后变成一次大模型推理的中间结果</figcaption>
+    </figure>
+    <div class="grid grid-3" style="margin-top:24px">
+      <div class="card strip">
+        <div class="icon">🧱</div>
+        <h3>操作系统内核</h3>
+        <p class="muted">在 xv6 / NexOS 上做过按需分配、写时复制（COW）、语义文件系统等实验。最喜欢的一类问题：<em>抽象 leak 时，代价由谁支付？</em></p>
+        <ul class="tags"><li>xv6</li><li>COW / 页表</li><li>FAT16</li></ul>
+      </div>
+      <div class="card strip">
+        <div class="icon">🔌</div>
+        <h3>网络协议栈</h3>
+        <p class="muted">从以太网帧到 HTTP/2 的二进制分帧。相比背协议，我更愿意抓包看真实报文长什么样。</p>
+        <ul class="tags"><li>HTTP/1.1 vs /2</li><li>TLS1.3</li><li>TCP 状态机</li></ul>
+      </div>
+      <div class="card strip">
+        <div class="icon">🧠</div>
+        <h3>推理系统的资源管理</h3>
+        <p class="muted">大模型服务的显存 / 内存 / SSD 分层与 KV Cache 复用，本质上是操作系统老问题在新场景里重生。</p>
+        <ul class="tags"><li>KV Cache</li><li>Radix Tree</li><li>分层卸载</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="lab">
+    <h2 class="sec">课程实验记录（做过的，不是读过的）</h2>
+    <table>
+      <caption>系统类课程实验清单</caption>
+      <thead>
+        <tr><th>实验</th><th>平台</th><th>我实现 / 观测的东西</th><th>最大的收获</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>xv6 基线与调度</td><td class="num">QEMU + RISC-V</td>
+          <td>阅读 <code class="inline">scheduler()</code>，加统计计数器观察上下文切换次数</td>
+          <td>"进程切换很贵"从一个口号变成了一组数字</td>
+        </tr>
+        <tr>
+          <td>按需分配 &amp; COW</td><td class="num">NexOS</td>
+          <td>实现 <code class="inline">user_lazy_alloc()</code>，用 <code class="inline">PTE_COW</code> + 物理页引用计数改造 <code class="inline">fork()</code></td>
+          <td>引用计数错一位，就能收获一整个下午的 panic</td>
+        </tr>
+        <tr>
+          <td>语义文件系统</td><td class="num">NexOS</td>
+          <td>给 FAT16 文件挂关键词属性，用 B+ 树做按关键词检索</td>
+          <td>文件系统不只是"存字节"，元数据设计才是灵魂</td>
+        </tr>
+        <tr>
+          <td>AI 服务与算力调度</td><td class="num">NexOS</td>
+          <td>请求队列 + worker 协议，单条前缀缓存复用（用户态 memcpy 版）</td>
+          <td>把"缓存"从进程私货变成系统服务，收益立刻不一样</td>
+        </tr>
+        <tr>
+          <td>静态站点与 HTTP 观测<br><span class="muted">（本次计网实验）</span></td><td class="num">HTML/CSS + Git</td>
+          <td>手写 4 页站点 → 部署 GitHub Pages → 用 <code class="inline">curl -Iv</code> 读出协商结果为 <strong>HTTP/2</strong></td>
+          <td>应用层协议不再是书上的图，而是一行真实的响应状态行</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">
+      <b>说明：</b>本页只记录自己亲手完成或复现过的内容；未验证的性能数字一律不写。想看我怎么判断"这个实验真的通了"，可以读
+      <a href="blog.html">博客里关于部署排查的那一篇</a>。
+    </div>
+  </section>
+
+  <section id="paper">
+    <h2 class="sec">在读 / 读过清单</h2>
+    <div class="panel">
+      <ul>
+        <li>Kwon et al. <em>Efficient Memory Management for LLM Serving with PagedAttention</em>（SOSP'23，
+            <a href="https://arxiv.org/abs/2309.06180" target="_blank" rel="noopener">arXiv:2309.06180</a>）—— 虚拟内存思想搬到推理引擎，读完会重新理解"分页"。</li>
+        <li>Zheng et al. <em>SGLang: Efficient Execution of Structured LM Programs</em>（NeurIPS'24，
+            <a href="https://arxiv.org/abs/2312.07104" target="_blank" rel="noopener">arXiv:2312.07104</a>）—— RadixAttention 就是基数树在 KV 复用上的直接落地。</li>
+        <li>Sheng et al. <em>FlexGen</em>（ICML'23，<a href="https://arxiv.org/abs/2303.06865" target="_blank" rel="noopener">arXiv:2303.06865</a>）——
+            单卡 + CPU + SSD 分层调度的线性规划建模，很像操作系统的置换问题。</li>
+        <li>IETF <em>HTTP/1.1</em> 语义与内容协商（<a href="https://datatracker.ietf.org/doc/html/rfc9112" target="_blank" rel="noopener">RFC 9112</a>）、
+            <em>HTTP/2</em>（<a href="https://datatracker.ietf.org/doc/html/rfc9113" target="_blank" rel="noopener">RFC 9113</a>）—— 做本次实验时把第 2、3 节当作工具书翻了一遍。</li>
+      </ul>
+      <p class="muted">阅读方法很笨但有效：每读一篇，就在实验记录里写一句"如果只能在 xv6 上实现它的一个部件，我选哪个"。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">我的工具链</h2>
+    <table>
+      <caption>日常在用的东西</caption>
+      <thead>
+        <tr><th>用途</th><th>工具</th><th>为什么是它</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>日常开发</td><td>WSL2 + Neovim + tmux</td><td>键盘不离主键区，思路不容易断</td></tr>
+        <tr><td>版本管理</td><td>Git / GitHub</td><td>本页面每一次改动都有 commit 记录，写博客顺手就发版</td></tr>
+        <tr><td>报文观测</td><td>curl -v / Wireshark / tcpdump</td><td>协议不懂就抓包，比猜快</td></tr>
+        <tr><td>内核调试</td><td>QEMU + gdb</td><td>在页表里迷路时的唯一指南针</td></tr>
+        <tr><td>自动化</td><td>Python + 浏览器自动化</td><td>重复三次的操作，值得写脚本</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="pager">
+    <a href="ustc.html">← 上一页：科大印象</a>
+    <a href="blog.html">下一页：最新博文 →</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="foot-links">
+    <span><a href="index.html">首页</a></span>
+    <span><a href="ustc.html">科大印象</a></span>
+    <span><a href="research.html">研究分享</a></span>
+    <span><a href="blog.html">博客</a></span>
+    <span><a href="http.html">HTTP 观察</a></span>
+  </div>
+  <div>© 2026 崔嘉洋 · 纯 HTML5 + CSS3 手写，GitHub Pages 托管</div>
+</footer>
+
+</body>
+</html>

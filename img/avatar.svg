@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12406b"/>
+      <stop offset="60%" stop-color="#1a6fb5"/>
+      <stop offset="100%" stop-color="#14b8c4"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2b6ea8"/>
+      <stop offset="100%" stop-color="#17466e"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="210" cy="210" r="205" fill="url(#bg)"/>
+  <circle cx="210" cy="210" r="188" fill="none" stroke="#ffffff" stroke-opacity=".22" stroke-width="3"/>
+
+  <!-- 背景代码符号 -->
+  <g fill="#ffffff" opacity=".16" font-family="Consolas,monospace" font-size="26">
+    <text x="46" y="96">&lt;/&gt;</text>
+    <text x="316" y="82">{ }</text>
+    <text x="60" y="330">01</text>
+    <text x="318" y="326">HTTP</text>
+  </g>
+
+  <!-- 人物 -->
+  <path d="M210 300c-62 0-112 30-124 74h248c-12-44-62-74-124-74z" fill="url(#shirt)"/>
+  <path d="M210 300c-16 0-31 3-44 8l44 42 44-42c-13-5-28-8-44-8z" fill="#eaf3fb" opacity=".9"/>
+  <rect x="186" y="252" width="48" height="60" rx="20" fill="#f0c8a8"/>
+  <circle cx="210" cy="186" r="76" fill="#f7d6b6"/>
+  <path d="M134 178c0-46 34-74 76-74s76 28 76 74c0-12-14-24-28-26-16-3-28 6-48 6s-34-8-50-4c-14 3-26 14-26 24z" fill="#2b2f38"/>
+  <path d="M132 180c-8 4-10 22-2 28 4 3 8 1 9-4 2-10 1-18-1-24zM288 180c8 4 10 22 2 28-4 3-8 1-9-4-2-10-1-18 1-24z" fill="#f0c8a8"/>
+
+  <!-- 眼镜 -->
+  <g fill="none" stroke="#2b2f38" stroke-width="5">
+    <rect x="156" y="176" width="46" height="34" rx="12"/>
+    <rect x="218" y="176" width="46" height="34" rx="12"/>
+    <path d="M202 190h16M156 190l-20-6M264 190l20-6"/>
+  </g>
+  <g fill="#2b2f38"><circle cx="179" cy="194" r="5"/><circle cx="241" cy="194" r="5"/></g>
+  <path d="M196 232q14 12 28 0" fill="none" stroke="#c0785e" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- 学士帽 -->
+  <path d="M210 78l110 36-110 36-110-36z" fill="#0a2540"/>
+  <path d="M262 128v30c0 12-52 22-52 22s-52-10-52-22v-30l52 18z" fill="#103a63"/>
+  <path d="M318 118v46" stroke="#f4b942" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="318" cy="170" r="9" fill="#f4b942"/>
+</svg>
