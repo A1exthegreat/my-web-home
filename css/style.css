@@ -151,8 +151,8 @@ h2.sec {
 }
 h3 { color: var(--navy-2); margin: 26px 0 10px; }
 
-.lead { font-size: 1.05rem; color: var(--ink-soft); }
-.muted { color: var(--ink-soft); font-size: .92rem; }
+.lead { font-size: 1.05rem; color: #33475b; }
+.muted { color: #45566a; font-size: .92rem; }
 
 /* ---------- 6. 卡片 ---------- */
 .grid { display: grid; gap: 20px; }
