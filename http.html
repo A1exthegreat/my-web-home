@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="崔嘉洋">
+<meta name="description" content="实验记录：本站点使用的 HTTP 版本检查过程与结论（HTTP/2）">
+<title>HTTP 观察 · 崔嘉洋的个人小站</title>
+<link rel="icon" href="img/avatar.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><span class="dot"></span>崔嘉洋 · My Web Home</a>
+    <ul class="menu">
+      <li><a href="index.html">首页</a></li>
+      <li><a href="ustc.html">科大印象</a></li>
+      <li><a href="research.html">研究分享</a></li>
+      <li><a href="blog.html">博客</a></li>
+      <li><a class="active" href="http.html">HTTP 观察</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>HTTP 观察：这个网页用的是 HTTP 几？<span class="en">ANSWER: HTTP/2 OVER TLS 1.3</span></h1>
+    <p class="slogan">实验要求检查本站点使用的 HTTP 版本号。这一页记录我用的三种方法、原始报文，以及一个差点把我骗过去的干扰项。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#check">怎么看版本</a>
+      <a class="btn" href="#raw">原始报文</a>
+      <a class="btn" href="#diff">h1.1 / h2 / h3 对比</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2 class="sec">结论先行</h2>
+    <div class="panel strip">
+      <p class="lead" style="margin-top:0">本站点 <code class="inline">https://a1exthegreat.github.io/my-web-home/</code> 实际使用 <strong>HTTP/2</strong>（协议标识 <code class="inline">h2</code>），运行在 <strong>TLS 1.3</strong> 之上；服务端为 GitHub Pages（<code class="inline">server: GitHub.com</code>，经 Fastly / Varnish 边缘缓存）。</p>
+      <table>
+        <caption>观测要点（观测时间 2026-09-28，curl 8.5.0 / nghttp2 1.59.0）</caption>
+        <thead><tr><th>观测项</th><th>结果</th><th>依据</th></tr></thead>
+        <tbody>
+          <tr><td>HTTP 协议版本</td><td><strong>HTTP/2</strong></td><td>状态行 <code class="inline">HTTP/2 200</code>；<code class="inline">%{http_version}</code> 输出 <code class="inline">2</code></td></tr>
+          <tr><td>协商方式</td><td>TLS ALPN</td><td>客户端 <code class="inline">offers h2,http/1.1</code> → <code class="inline">server accepted h2</code></td></tr>
+          <tr><td>传输层安全</td><td>TLS 1.3</td><td><code class="inline">TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519</code></td></tr>
+          <tr><td>能否降级</td><td>可以，HTTP/1.1 仍返回 200</td><td><code class="inline">curl --http1.1</code> → <code class="inline">http_version=1.1  code=200</code></td></tr>
+          <tr><td>是否支持 HTTP/3</td><td>未见宣告</td><td>响应头无 <code class="inline">alt-svc</code>；换用 <code class="inline">h3</code> 无法建立</td></tr>
+          <tr><td>缓存策略</td><td><code class="inline">max-age=600</code> + ETag</td><td>带 <code class="inline">If-None-Match</code> 重访返回 <code class="inline">HTTP/2 304</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="check">
+    <h2 class="sec">方法一：curl 看协商过程</h2>
+    <pre>curl -v -I https://a1exthegreat.github.io/my-web-home/</pre>
+    <p>关键行（<span class="muted">完整输出见文末附录</span>）：</p>
+    <pre>* ALPN: curl offers h2,http/1.1
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519 / RSASSA-PSS
+<span class="hl">* ALPN: server accepted h2</span>
+<span class="hl">* using HTTP/2</span>
+* [HTTP/2] [1] [:method: HEAD]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: a1exthegreat.github.io]
+* [HTTP/2] [1] [:path: /my-web-home/]
+&lt; <span class="hl">HTTP/2 200</span>
+&lt; server: GitHub.com
+&lt; content-type: text/html; charset=utf-8
+&lt; cache-control: max-age=600</pre>
+    <p>注意最后请求行变成了 <code class="inline">:method / :scheme / :authority / :path</code> 这样的<strong>伪首部</strong>：HTTP/2 不再发 <code class="inline">HEAD / HTTP/1.1</code> 文本行，而是二进制分帧 + HPACK 压缩首部。这也是为什么用 <code class="inline">telnet</code> 那套看 HTTP/1.x 的办法在 h2 上完全失效。</p>
+
+    <h2 class="sec" style="margin-top:34px">方法二：只取版本号的快捷写法</h2>
+    <pre>curl -sS -o /dev/null -w <span class="hl">"%{http_version}  %{url_effective}\n"</span> https://a1exthegreat.github.io/my-web-home/
+<span class="cm"># 2  https://a1exthegreat.github.io/my-web-home/</span></pre>
+    <p>逐资源统计一遍，确认样式表和图片同样走 h2：</p>
+    <pre>/                      HTTP/2  200   7523B  text/html; charset=utf-8
+/ustc.html             HTTP/2  200   8367B  text/html; charset=utf-8
+/research.html         HTTP/2  200   8253B  text/html; charset=utf-8
+/blog.html             HTTP/2  200   9851B  text/html; charset=utf-8
+/css/style.css         HTTP/2  200   9922B  text/css;  charset=utf-8
+/img/campus.svg        HTTP/2  200   4190B  image/svg+xml
+/img/skill-radar.png   HTTP/2  200  17932B  image/png</pre>
+
+    <h2 class="sec" style="margin-top:34px">方法三：浏览器侧印证</h2>
+    <p>在 DevTools 的 Network 面板把 <strong>Protocol</strong> 列勾出来即可看到 <code class="inline">h2</code>；也可以用 <code class="inline">PerformanceResourceTiming.nextHopProtocol</code> 直接取值：</p>
+    <pre>performance.getEntriesByType(<span class="hl">"resource"</span>).map(r =&gt; [r.name.split(<span class="hl">"/"</span>).pop(), r.nextHopProtocol])
+<span class="cm">// [["style.css","h2"], ["avatar.svg","h2"], ["skill-radar.png","h2"], ["network-mesh.svg","h2"], ...]</span></pre>
+    <div class="note"><b>三种方法互相独立：</b>命令行看协商日志、脚本读版本变量、浏览器读实际连接 —— 三者都是 <code class="inline">h2</code>，结论才算站得住。</div>
+  </section>
+
+  <section id="raw">
+    <h2 class="sec">原始报文与响应头解读</h2>
+    <pre>HTTP/1.1 200 Connection established      <span class="cm">&lt;= 干扰项！这是本地代理的 CONNECT 隧道，不是本站版本</span>
+
+<span class="hl">HTTP/2 200</span>                               <span class="cm">&lt;= 真正的状态行：HTTP/2</span>
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Mon, 28 Sep 2026 15:31:39 GMT
+strict-transport-security: max-age=31556952   <span class="cm"># HSTS：强制后续走 https</span>
+access-control-allow-origin: *
+<span class="hl">etag: "6aba885b-1d63"</span>                    <span class="cm"># 条件请求用（下文 304）</span>
+<span class="hl">cache-control: max-age=600</span>               <span class="cm"># 浏览器缓存 10 分钟</span>
+expires: Mon, 28 Sep 2026 15:41:53 GMT
+accept-ranges: bytes
+via: <span class="hl">1.1 varnish</span>                          <span class="cm"># 边缘缓存命中，via 只描述该跳</span>
+x-served-by: cache-sin-wsap440085-SIN    <span class="cm"># Fastly 新加坡边缘节点</span>
+x-cache: HIT
+x-github-edge-region: southeastasia
+vary: Accept-Encoding
+content-length: 7523</pre>
+    <div class="note"><b>差点踩的坑：</b>第一行 <code class="inline">HTTP/1.1 200 Connection established</code> 会让人误以为"这个网站是 HTTP/1.1"。它其实是本机代理为建立 TLS 隧道而回复的 CONNECT 响应；真正的站点响应是它下面那个 <code class="inline">HTTP/2 200</code>。同理 <code class="inline">via: 1.1 varnish</code> 说的是缓存那跳的协议，不能当作端到端版本。</div>
+
+    <h3>条件请求：第二次访问发生了什么</h3>
+    <pre>ET=$(curl -sSI $B/css/style.css | awk -F'&quot;' <span class="hl">'/etag/{print $2}'</span>)
+curl -sS -D - -o /dev/null -H <span class="hl">"If-None-Match: \"$ET\""</span> $B/css/style.css
+
+<span class="cm"># HTTP/2 304</span>
+<span class="cm"># cache-control: max-age=600</span>
+<span class="cm"># etag: "6aba885b-26c2"</span></pre>
+    <p>服务器只回一个不带 body 的 <code class="inline">304 Not Modified</code>，9.9 KB 的样式表一个字节都不用重传 —— 这就是 <code class="inline">strong-ETag + max-age</code> 组合的实际效果。</p>
+
+    <h3>降级对照实验</h3>
+    <pre>curl -sS --http1.1 -o /dev/null -w <span class="hl">"%{http_version} %{http_code}\n"</span> $B/
+<span class="cm"># 1.1  200      &lt;= 服务端两种都支持，由 ALPN 决定用哪个</span></pre>
+    <p>说明 "HTTP/2" 并不是服务端强制的唯一选择：把 ALPN 里的 <code class="inline">h2</code> 拿掉，它还能继续用 HTTP/1.1 服务。这也是为什么很多兼容性排查要<strong>两个版本都跑一遍</strong>。</p>
+  </section>
+
+  <section id="diff">
+    <h2 class="sec">顺手做的一张对比表</h2>
+    <table>
+      <caption>HTTP/1.1、HTTP/2、HTTP/3 关键差异（结合本站现象）</caption>
+      <thead><tr><th>维度</th><th>HTTP/1.1</th><th>HTTP/2 <span class="badge">本站</span></th><th>HTTP/3</th></tr></thead>
+      <tbody>
+        <tr><td>报文格式</td><td>纯文本，可 telnet</td><td>二进制分帧 + HPACK</td><td>二进制，QUIC 帧</td></tr>
+        <tr><td>并发</td><td>流水线，仍有<strong>队头阻塞</strong>，浏览器只能开 6 条连接</td><td>一条 TCP 上多流并发</td><td>一条 QUIC 连接上多流，流间不阻塞</td></tr>
+        <tr><td>传输层</td><td>TCP</td><td>TCP(+TLS)</td><td>UDP / QUIC</td></tr>
+        <tr><td>首部开销</td><td>每次全量重复</td><td>HPACK 索引表</td><td>QPACK</td></tr>
+        <tr><td>服务器推送</td><td>—</td><td>标准里有，实践已基本弃用</td><td>无</td></tr>
+        <tr><td>本站是否可用</td><td>可用（已实测降级）</td><td>✔ 实际使用</td><td>未宣告 <code class="inline">alt-svc</code>，测不通</td></tr>
+      </tbody>
+    </table>
+    <figure style="margin-top:24px">
+      <img src="img/http-flow.svg" alt="一次访问的完整链路图：浏览器、DNS 与代理、GitHub Pages 之间的请求与响应" width="900" height="360">
+      <figcaption>一次访问的完整链路（我把实测结论标在了图上）</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2 class="sec">附录：完整命令记录</h2>
+    <div class="panel">
+      <ul>
+        <li>协议与版本：<code class="inline">curl -v -I https://a1exthegreat.github.io/my-web-home/</code></li>
+        <li>只取版本：<code class="inline">curl -sS -o /dev/null -w "%{http_version}" &lt;URL&gt;</code></li>
+        <li>降级对照：<code class="inline">curl --http1.1 -sS -o /dev/null -w "%{http_version} %{http_code}" &lt;URL&gt;</code></li>
+        <li>条件请求：<code class="inline">curl -sS -D - -o /dev/null -H 'If-None-Match: "&lt;etag&gt;"' &lt;URL&gt;</code></li>
+        <li>浏览器印证：DevTools → Network → Protocol 列 / <code class="inline">nextHopProtocol</code></li>
+      </ul>
+      <p class="muted">参考标准：<a href="https://datatracker.ietf.org/doc/html/rfc9112" target="_blank" rel="noopener">RFC 9112 HTTP/1.1</a>、
+        <a href="https://datatracker.ietf.org/doc/html/rfc9113" target="_blank" rel="noopener">RFC 9113 HTTP/2</a>、
+        <a href="https://datatracker.ietf.org/doc/html/rfc9114" target="_blank" rel="noopener">RFC 9114 HTTP/3</a>、
+        <a href="https://datatracker.ietf.org/doc/html/rfc7301" target="_blank" rel="noopener">RFC 7301 TLS ALPN</a>。
+        观测时本机走了一个本地 HTTP 代理（CONNECT 隧道），对端到端协议版本无影响：去掉代理直连，结果同样是 <code class="inline">HTTP/2 200</code>。</p>
+    </div>
+  </section>
+
+  <div class="pager">
+    <a href="blog.html">← 上一页：博客</a>
+    <a href="index.html">回到首页</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="foot-links">
+    <span><a href="index.html">首页</a></span>
+    <span><a href="ustc.html">科大印象</a></span>
+    <span><a href="research.html">研究分享</a></span>
+    <span><a href="blog.html">博客</a></span>
+    <span><a href="http.html">HTTP 观察</a></span>
+  </div>
+  <div>© 2026 崔嘉洋 · 纯 HTML5 + CSS3 手写，GitHub Pages 托管 · 本页数据为 2026-09-28 实测</div>
+</footer>
+
+</body>
+</html>
