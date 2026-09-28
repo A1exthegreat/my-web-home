@@ -25,7 +25,7 @@
 
 <article>
 
-<p>这篇记录本次实验做了什么、中间卡在哪里、最后怎么确认结果。实验要求写在<a href="https://myworldandyou.github.io/2026-09-22/Computer-Network-Lab-1/" target="_blank" rel="noopener">指导书</a>里：做一个主题明确的网页、发布一篇新博客、检查网页使用的 HTTP 协议版本，页面里要有图片和至少三个超链接。</p>
+<p>这篇记录本次实验做了什么、中间卡在哪里、最后怎么确认结果。实验要求写在<a href="https://myworldandyou.github.io/" target="_blank" rel="noopener">实验指导</a>里：做一个主题明确的网页、发布一篇新博客、检查网页使用的 HTTP 协议版本，页面里要有图片和至少三个超链接。</p>
 
 <h2 id="s1">1. 页面文件</h2>
 <p>我做了三个页面，共用一份样式表。图片用的是校园照片的原始网址，所以仓库里没有图片文件。</p>
@@ -45,7 +45,7 @@
   <tbody>
     <tr><td>&lt;h1&gt; &lt;h2&gt; &lt;h3&gt;</td><td>页面标题和五个小节的标题</td></tr>
     <tr><td>&lt;p&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt;</td><td>正文段落、相关链接、培养方式列表</td></tr>
-    <tr><td>&lt;a href&gt;</td><td>三个页面互链，另有 5 个指向校外网站的链接</td></tr>
+    <tr><td>&lt;a href&gt;</td><td>三个页面互链，另有指向 5 个校外网站的链接</td></tr>
     <tr><td>&lt;img src alt&gt;</td><td>校门照片与教学楼照片，alt 写了图片内容</td></tr>
     <tr><td>&lt;table&gt; &lt;caption&gt; &lt;th&gt; &lt;td&gt;</td><td>学校基本情况、历史节点、院系方向、地点列表</td></tr>
     <tr><td>&lt;div&gt;</td><td>提示块 <code>&lt;div class="note"&gt;</code>，样式表里给它加了左侧竖线</td></tr>
@@ -106,13 +106,14 @@ $ curl -sS --http1.1 -o /dev/null -w "%{http_version} %{http_code}\n" \
   <tbody>
     <tr><td>网页主题明确、内容完整</td><td>主题为学校介绍，共三个页面</td></tr>
     <tr><td>发布了一篇新的博客文章</td><td>就是本页</td></tr>
-    <tr><td>页面至少三个有效超链接</td><td>站内链接 12 个，指向校外网站的链接 5 个，都点过</td></tr>
+    <tr><td>页面至少三个有效超链接</td><td>三个页面合起来站内链接 19 个，指向 5 个校外网站，都点过</td></tr>
     <tr><td>包含图片且能正常加载</td><td>两张照片，用浏览器和 curl 各查过一次</td></tr>
     <tr><td>电脑和手机宽度下都能读</td><td>手机宽度（390 像素）下看过，没有横向滚动</td></tr>
     <tr><td>记录公网网页的协议版本</td><td>HTTP/2（h2）</td></tr>
   </tbody>
 </table>
 
+<p>检查链接时发现指导书站点的主页和归档页能打开，但文章页地址现在返回 404（助教站点近期重建过）。所以文中一律指向站点首页，避免留一个打不开的链接。</p>
 <p>下一步想给站点补 RSS，再把 <code>ETag</code> 和 <code>304</code> 这一来一回抓下来看清楚。</p>
 
 </article>
