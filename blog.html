@@ -12,7 +12,7 @@
 
 <header class="site">
   <h1>实验一：静态网页制作与发布记录</h1>
-  <p class="time">发布时间 2026-09-28 · 作者 崔嘉洋 · 本页就是本次实验新发布的那篇博客</p>
+  <p class="time">2026-09-28 · 崔嘉洋</p>
 </header>
 
 <nav class="top">
@@ -25,101 +25,63 @@
 
 <article>
 
-<p>这篇记录本次实验做了什么、中间卡在哪里、最后怎么确认结果。实验要求写在<a href="https://myworldandyou.github.io/" target="_blank" rel="noopener">实验指导</a>里：做一个主题明确的网页、发布一篇新博客、检查网页使用的 HTTP 协议版本，页面里要有图片和至少三个超链接。</p>
+<p>本文记录<a href="https://myworldandyou.github.io/" target="_blank" rel="noopener">实验一</a>的制作与发布过程：页面文件、用到的标签、Git 与 GitHub Pages 的部署命令、HTTP 协议版本的检查结果。</p>
 
 <h2 id="s1">1. 页面文件</h2>
-<p>我做了三个页面，共用一份样式表。图片用的是校园照片的原始网址，所以仓库里没有图片文件。</p>
 <pre><code>my-web-home/
 ├── index.html      学校介绍（首页）
 ├── campus.html     校园风光
-├── blog.html       本页，实验记录
+├── blog.html       本页
 └── css/
     └── style.css   三个页面共用的样式表</code></pre>
 
-<p>页面里用到的标签如下表。</p>
 <table>
-  <caption>表 1 页面里用到的 HTML 标签</caption>
+  <caption>表 1 页面中使用的 HTML 标签</caption>
   <thead>
-    <tr><th style="width:34%">标签</th><th>用在哪里</th></tr>
+    <tr><th style="width:34%">标签</th><th>用途</th></tr>
   </thead>
   <tbody>
-    <tr><td>&lt;h1&gt; &lt;h2&gt; &lt;h3&gt;</td><td>页面标题和五个小节的标题</td></tr>
-    <tr><td>&lt;p&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt;</td><td>正文段落、相关链接、培养方式列表</td></tr>
-    <tr><td>&lt;a href&gt;</td><td>三个页面互链，另有指向 5 个校外网站的链接</td></tr>
-    <tr><td>&lt;img src alt&gt;</td><td>校门照片与教学楼照片，alt 写了图片内容</td></tr>
-    <tr><td>&lt;table&gt; &lt;caption&gt; &lt;th&gt; &lt;td&gt;</td><td>学校基本情况、历史节点、院系方向、地点列表</td></tr>
-    <tr><td>&lt;div&gt;</td><td>提示块 <code>&lt;div class="note"&gt;</code>，样式表里给它加了左侧竖线</td></tr>
-    <tr><td>&lt;figure&gt; &lt;figcaption&gt;</td><td>照片与图下说明</td></tr>
+    <tr><td>&lt;h1&gt; &lt;h2&gt;</td><td>页面标题与小节标题</td></tr>
+    <tr><td>&lt;p&gt; &lt;ul&gt; &lt;li&gt;</td><td>段落与列表</td></tr>
+    <tr><td>&lt;a href&gt;</td><td>页面互链与指向校外网站的链接</td></tr>
+    <tr><td>&lt;img src alt&gt;</td><td>校园照片</td></tr>
+    <tr><td>&lt;table&gt; &lt;caption&gt; &lt;th&gt; &lt;td&gt;</td><td>学校概况、历史节点、院系方向等表格</td></tr>
+    <tr><td>&lt;div class="note"&gt;</td><td>提示块</td></tr>
+    <tr><td>&lt;figure&gt; &lt;figcaption&gt;</td><td>图片与图下说明</td></tr>
     <tr><td>&lt;header&gt; &lt;nav&gt; &lt;footer&gt;</td><td>页头、导航条、页脚</td></tr>
-    <tr><td>&lt;pre&gt; &lt;code&gt;</td><td>本页贴命令和目录结构</td></tr>
+    <tr><td>&lt;pre&gt; &lt;code&gt;</td><td>本页的命令与目录结构</td></tr>
   </tbody>
 </table>
 
-<p>样式表 143 行，全放在一个文件里。内容不多，主要是 <code>body</code> 限制宽度居中、<code>h2</code> 加左侧竖线、表格加边框和隔行底色、最后一段 <code>@media (max-width: 600px)</code> 处理手机宽度。</p>
+<p>样式表 143 行，写在一个文件里：<code>body</code> 限制宽度并居中，<code>h2</code> 加左侧竖线，表格加边框与隔行底色，最后一段 <code>@media (max-width: 600px)</code> 处理手机宽度。</p>
 
-<h2 id="s2">2. 用 Git 提交并部署到 GitHub Pages</h2>
+<h2 id="s2">2. 提交与部署</h2>
 <pre><code>git init -b main
 git add .
 git commit -m "add lab 1 webpage"
 git remote add origin https://github.com/A1exthegreat/my-web-home.git
 git push -u origin main</code></pre>
-<p>推上去之后网页并不会自动有网站，还要在仓库的 Settings &rarr; Pages 里指定用哪个分支发布。我是用命令行做的：</p>
+<p>再指定 Pages 用 main 分支的根目录发布：</p>
 <pre><code>gh api -X POST repos/A1exthegreat/my-web-home/pages \
     -f "source[branch]=main" -f "source[path]=/"</code></pre>
-<p>之后每次改完页面，重复三步就能更新：</p>
-<pre><code>git add -A
-git commit -m "改了什么写清楚"
-git push origin main</code></pre>
 
-<h2 id="s3">3. 检查 HTTP 协议版本</h2>
-<p>按指导书的做法，打开已经发布的页面，按 F12 打开开发者工具，切到 Network（网络）面板，刷新页面，在表头上勾选 Protocol（协议）这一列。主文档那一行显示的是 <code>h2</code>，也就是 HTTP/2。页面里的照片和样式表同样是 <code>h2</code>。</p>
-<p>我在命令行里又查了一遍，结论一致：</p>
+<h2 id="s3">3. HTTP 协议版本检查</h2>
+<p>打开已发布的页面，按 F12 打开开发者工具，切到 Network 面板，刷新页面，在表头勾出 Protocol 列。主文档与样式表、图片都显示 <code>h2</code>，即 HTTP/2。</p>
+<p>命令行复查，结果一致：</p>
 <pre><code>$ curl -sS -o /dev/null -w "%{http_version}\n" \
     https://a1exthegreat.github.io/my-web-home/
 2
 
-$ curl -v -I https://a1exthegreat.github.io/my-web-home/ 2&gt;&amp;1 | grep -E "ALPN|HTTP/"
+$ curl -v -I https://a1exthegreat.github.io/my-web-home/ 2&gt;&amp;1 | grep -E "ALPN|using|HTTP/2"
 * ALPN: curl offers h2,http/1.1
 * ALPN: server accepted h2
 * using HTTP/2
-&lt; HTTP/2 200
-
-$ curl -sS --http1.1 -o /dev/null -w "%{http_version} %{http_code}\n" \
-    https://a1exthegreat.github.io/my-web-home/
-1.1 200</code></pre>
-<p>三条结果说明：协商结果是 HTTP/2；服务端也支持 HTTP/1.1，客户端不报 <code>h2</code> 时会退回 1.1；页面本身没有宣告 HTTP/3。</p>
-
-<h2 id="s4">4. 卡住的几个地方</h2>
-<ol>
-  <li><strong>发布后打开是 404。</strong>原因是 Pages 的发布目录设成了 <code>/docs</code>，而我把页面推在仓库根目录。把 <code>source[path]</code> 改成 <code>/</code> 就正常了。</li>
-  <li><strong>线上只剩文字，样式丢了。</strong>本地用 <code>file://</code> 打开时一切正常，上线后样式表加载不到。原因是我一开始写的是 <code>/css/style.css</code>，站点挂在 <code>/my-web-home/</code> 这个子目录下，这个绝对路径指到了站点外面。改成相对路径解决。</li>
-  <li><strong>改了页面看不到变化。</strong>响应头里有 <code>cache-control: max-age=600</code>，浏览器和中间缓存都还在用旧文件。判断是否发布成功的时候不要只看浏览器，用 curl 看一遍更靠得住。</li>
-  <li><strong>把代理的响应当成了网页的协议版本。</strong>我的机器上开了本地代理，curl 输出第一行是 <code>HTTP/1.1 200 Connection established</code>，这是代理为建立隧道回的响应，不是网页的版本号。真正的状态行在它下面一行。</li>
-</ol>
-
-<h2 id="s5">5. 对照检查项</h2>
-<table>
-  <caption>表 2 提交前自查（对照指导书的检查表）</caption>
-  <thead>
-    <tr><th style="width:46%">检查项</th><th>情况</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>网页主题明确、内容完整</td><td>主题为学校介绍，共三个页面</td></tr>
-    <tr><td>发布了一篇新的博客文章</td><td>就是本页</td></tr>
-    <tr><td>页面至少三个有效超链接</td><td>三个页面合起来站内链接 19 个，指向 5 个校外网站，都点过</td></tr>
-    <tr><td>包含图片且能正常加载</td><td>两张照片，用浏览器和 curl 各查过一次</td></tr>
-    <tr><td>电脑和手机宽度下都能读</td><td>手机宽度（390 像素）下看过，没有横向滚动</td></tr>
-    <tr><td>记录公网网页的协议版本</td><td>HTTP/2（h2）</td></tr>
-  </tbody>
-</table>
-
-<p>检查链接时发现指导书站点的主页和归档页能打开，但文章页地址现在返回 404（助教站点近期重建过）。所以文中一律指向站点首页，避免留一个打不开的链接。</p>
-<p>下一步想给站点补 RSS，再把 <code>ETag</code> 和 <code>304</code> 这一来一回抓下来看清楚。</p>
+&lt; HTTP/2 200</code></pre>
 
 </article>
 
 <footer class="site">
-  <p>崔嘉洋 · PB24111632 · 中国科学技术大学 · 相关页面：<a href="index.html">学校介绍</a>、<a href="campus.html">校园风光</a></p>
+  <p>崔嘉洋 · PB24111632 · 相关页面：<a href="index.html">学校介绍</a>、<a href="campus.html">校园风光</a></p>
 </footer>
 
 </body>
